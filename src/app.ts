@@ -3,6 +3,7 @@ import express, { Request, Response } from "express";
 import initDB from "./config/db";
 import { authRoutes } from "./modules/auth/auth.routes";
 import { userRoutes } from "./modules/users/user.routes";
+import { vehicleRoutes } from "./modules/vehicles/vehicle.routes";
 
 
 
@@ -17,9 +18,12 @@ initDB();
 app.get("/", (req: Request, res: Response) => {
   res.send("This is Rentigo Server");
 });
+
+
+
 app.use('/api/v1/auth',authRoutes );
 app.use('/api/v1/users',userRoutes );
-
+app.use("/api/v1/vehicles", vehicleRoutes);
 // app.use('/api/v1/users', userRoutes);
 
 
