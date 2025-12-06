@@ -5,8 +5,9 @@ import { bookingService } from "./booking.service";
 // POST /bookings
  const createBooking = async (req: Request, res: Response) => {
   try {
-    const userId = req.user!.id; // customer
-    const booking = await bookingService.createBooking({ ...req.body, customer_id: userId });
+ // customer
+    
+    const booking = await bookingService.createBooking({ ...req.body,  });
     res.status(201).json({ success: true, message: "Booking created successfully", data: booking });
   } catch (err: any) {
     res.status(400).json({ success: false, message: err.message });
@@ -19,6 +20,13 @@ import { bookingService } from "./booking.service";
     const role = req.user!.role;
     const userId = req.user!.id;
     const bookings = await bookingService.getBookings(userId, role);
+      if (!bookings|| bookings.length === 0) {
+    return res.status(200).json({
+      success: true,
+      message: "No booking found",
+      data: []
+    });
+  }
     res.status(200).json({ success: true, message: "Bookings retrieved successfully", data: bookings });
   } catch (err: any) {
     res.status(500).json({ success: false, message: err.message });

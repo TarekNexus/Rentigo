@@ -14,6 +14,8 @@ import { vehicleService } from "../vehicles/vehicle.service";
 
 // Create a booking
 const createBooking = async (booking: Partial<Booking>) => {
+
+
   const { customer_id, vehicle_id, rent_start_date, rent_end_date } = booking;
 
   // 1. Find vehicle
@@ -25,15 +27,23 @@ const createBooking = async (booking: Partial<Booking>) => {
   }
 
   // 2. Calculate days
-  const start = new Date(rent_start_date!);
-  const end = new Date(rent_end_date!);
+ // 2. Calculate days
+const start = new Date(rent_start_date!);
+const end = new Date(rent_end_date!);
 
-  if (end <= start) throw new Error("End date must be after start date");
+// validate date
+if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+  throw new Error("Invalid date format. Use YYYY-MM-DD");
+}
 
-  const days =
-    Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+if (end <= start) {
+  throw new Error("End date must be after start date");
+}
 
-  const total_price = days * Number(vehicle.daily_rent_price);
+const days =
+  Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+
+const total_price = days * Number(vehicle.daily_rent_price);
 
   // 3. Insert booking
   const result = await pool.query(
@@ -53,6 +63,8 @@ const createBooking = async (booking: Partial<Booking>) => {
   // 5. Return in required structure
   return {
     ...newBooking,
+      rent_start_date: rent_start_date,
+  rent_end_date: rent_end_date,
     vehicle: {
       vehicle_name: vehicle.vehicle_name,
       daily_rent_price: vehicle.daily_rent_price,
@@ -60,12 +72,10 @@ const createBooking = async (booking: Partial<Booking>) => {
   };
 };
 
+const formatDate = (date: string | Date) => new Date(date).toISOString().split("T")[0];
 
-// Get bookings
 const getBookings = async (userId?: number, role?: "admin" | "customer") => {
-
   if (role === "admin") {
-
     const result = await pool.query(`
       SELECT 
         b.*,
@@ -83,8 +93,8 @@ const getBookings = async (userId?: number, role?: "admin" | "customer") => {
       id: b.id,
       customer_id: b.customer_id,
       vehicle_id: b.vehicle_id,
-      rent_start_date: b.rent_start_date,
-      rent_end_date: b.rent_end_date,
+      rent_start_date: formatDate(b.rent_start_date),
+      rent_end_date: formatDate(b.rent_end_date),
       total_price: b.total_price,
       status: b.status,
       customer: {
@@ -114,8 +124,8 @@ const getBookings = async (userId?: number, role?: "admin" | "customer") => {
   return result.rows.map((b: any) => ({
     id: b.id,
     vehicle_id: b.vehicle_id,
-    rent_start_date: b.rent_start_date,
-    rent_end_date: b.rent_end_date,
+    rent_start_date: formatDate(b.rent_start_date),
+    rent_end_date: formatDate(b.rent_end_date),
     total_price: b.total_price,
     status: b.status,
     vehicle: {
@@ -124,12 +134,12 @@ const getBookings = async (userId?: number, role?: "admin" | "customer") => {
       type: b.type
     }
   }));
-
 };
-
 
 // Update booking status (cancel/return)
 const updateBookingStatus = async (bookingId: number, status: "cancelled" | "returned") => {
+
+
 
   const bookingRes = await pool.query("SELECT * FROM bookings WHERE id=$1", [bookingId]);
   if (!bookingRes.rows[0]) throw new Error("Booking not found");
@@ -143,6 +153,8 @@ const updateBookingStatus = async (bookingId: number, status: "cancelled" | "ret
 
     return {
       ...booking,
+       rent_start_date: formatDate(booking.rent_start_date),
+    rent_end_date: formatDate(booking.rent_end_date),
       status,
       vehicle: {
         availability_status: "available"
@@ -152,6 +164,8 @@ const updateBookingStatus = async (bookingId: number, status: "cancelled" | "ret
 
   return {
     ...booking,
+       rent_start_date: formatDate(booking.rent_start_date),
+    rent_end_date: formatDate(booking.rent_end_date),
     status
   };
 };
