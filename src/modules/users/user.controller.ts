@@ -12,7 +12,7 @@ import { userServices } from "./user.service";
       data: users
     });
   } catch (err: any) {
-    res.status(500).json({ success: false, message: err.message });
+    res.status(500).json({ success: false, message: err.message,errors:err });
   }
 };
 
@@ -33,7 +33,7 @@ const updateUser = async (req: Request, res: Response) => {
       data: updated
     });
   } catch (err: any) {
-    res.status(400).json({ success: false, message: err.message });
+    res.status(400).json({ success: false, message: err.message,errors:err });
   }
 };
 
@@ -43,7 +43,7 @@ const updateUser = async (req: Request, res: Response) => {
     await userServices.deleteUser(userId);
     res.status(200).json({ success: true, message: "User deleted successfully" });
   } catch (err: any) {
-    res.status(400).json({ success: false, message: err.message });
+    res.status(400).json({ success: false, message: err.message,errors:err });
   }
 };
 

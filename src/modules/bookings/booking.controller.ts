@@ -10,7 +10,7 @@ import { bookingService } from "./booking.service";
     const booking = await bookingService.createBooking({ ...req.body,  });
     res.status(201).json({ success: true, message: "Booking created successfully", data: booking });
   } catch (err: any) {
-    res.status(400).json({ success: false, message: err.message });
+    res.status(400).json({ success: false, message: err.message ,errors:err});
   }
 };
 
@@ -29,7 +29,7 @@ import { bookingService } from "./booking.service";
   }
     res.status(200).json({ success: true, message: "Bookings retrieved successfully", data: bookings });
   } catch (err: any) {
-    res.status(500).json({ success: false, message: err.message });
+    res.status(500).json({ success: false, message: err.message,errors:err });
   }
 };
 
@@ -51,7 +51,7 @@ const updateBooking = async (req: Request, res: Response) => {
     const updated = await bookingService.updateBookingStatus(bookingId, status);
     res.status(200).json({ success: true, message: "Booking updated successfully", data: updated });
   } catch (err: any) {
-    res.status(400).json({ success: false, message: err.message });
+    res.status(400).json({ success: false, message: err.message,errors:err });
   }
 };
 
