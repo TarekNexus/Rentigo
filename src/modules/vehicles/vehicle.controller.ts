@@ -13,6 +13,15 @@ const createVehicle = async (req: Request, res: Response) => {
 
  const getAllVehicles = async (_req: Request, res: Response) => {
   const vehicles = await vehicleService.getAllVehicles();
+  
+  if (!vehicles || vehicles.length === 0) {
+    return res.status(200).json({
+      success: true,
+      message: "No vehicles found",
+      data: []
+    });
+  }
+
   res.status(200).json({ success: true, message: "Vehicles retrieved successfully", data: vehicles });
 };
 
