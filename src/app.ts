@@ -14,7 +14,7 @@ app.use(express.json());
 initDB();
 
 app.get("/", (req: Request, res: Response) => {
-  res.send("This is Rentigo Server");
+  res.send("Welcome to Rentigo Server");
 });
 
 app.use("/api/v1/auth", authRoutes);
