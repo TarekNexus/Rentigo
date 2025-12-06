@@ -6,10 +6,9 @@
 
 ## 🌍 Live URL
 
-🔗 **Live API:** https://your-live-api-link.com  
-🔗 **GitHub Repository:** https://github.com/your-username/rentigo  
+🔗 **Live API:** https://rentigo-tau.vercel.app
+🔗 **GitHub Repository:** https://github.com/TarekNexus/Rentigo
 
-> ⚠️ Replace these links with your actual deployment & repository links
 
 ---
 
@@ -116,7 +115,7 @@
 ## 1️⃣ Clone the project
 
 ```bash
-git clone https://github.com/your-username/rentigo.git
+git clone https://github.com/TarekNexus/Rentigo.git
 cd rentigo
 
 - npm install
